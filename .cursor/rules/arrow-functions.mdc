@@ -1,0 +1,21 @@
+---
+description: Use arrow function syntax for TypeScript functions in this pack.
+globs: **/*.ts
+alwaysApply: false
+---
+
+# Arrow functions
+
+Write TypeScript functions as arrows, including exports and helpers.
+
+```typescript
+import type { GenerateContext } from "./common/generate-context.ts";
+
+export const generate = async (
+  ctx: GenerateContext,
+): Promise<GenerateEntry[]> => {
+  // ...
+};
+```
+
+Do not use `function` declarations (`function foo()` / `export async function foo()`). Methods on classes may stay method syntax. Do not rewrite generated app templates unless they are pack-owned generator source.

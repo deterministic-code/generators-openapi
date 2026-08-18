@@ -1,0 +1,53 @@
+{
+  "name": "@deterministic-code/generators-openapi",
+  "version": "0.0.1",
+  "description": "OpenAPI generator pack for the deterministic toolchain: openapi.json emit and language wrappers.",
+  "type": "module",
+  "exports": {
+    "./generate-context": {
+      "types": "./dist/generate-context.d.ts",
+      "import": "./dist/generate-context.js"
+    },
+    "./generate-openapi": {
+      "types": "./dist/generate-openapi.d.ts",
+      "import": "./dist/generate-openapi.js"
+    },
+    "./rust/generate-openapi": {
+      "types": "./dist/rust/generate-openapi.d.ts",
+      "import": "./dist/rust/generate-openapi.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    },
+    "./*/*": {
+      "types": "./dist/*/*.d.ts",
+      "import": "./dist/*/*.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && mkdir -p dist/openapi dist/templates && cp src/openapi/default-settings.yaml dist/openapi/ && cp -R src/templates dist/",
+    "prepare": "npm run build",
+    "typecheck": "tsc -p tsconfig.build.json --noEmit",
+    "test": "node --experimental-strip-types --test src/generate-openapi.integration.test.ts src/rust/generate-openapi.integration.test.ts"
+  },
+  "dependencies": {
+    "change-case": "^5.4.4",
+    "js-yaml": "^4.1.0",
+    "mustache": "^4.2.0",
+    "pluralize": "^8.0.0",
+    "yaml": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/mustache": "^4.2.6",
+    "@types/node": "^22.10.0",
+    "@types/pluralize": "^0.0.33",
+    "typescript": "^5.8.0"
+  }
+}

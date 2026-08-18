@@ -1,0 +1,46 @@
+settings:
+  backend:
+    languages:
+      - typescript
+    datasources:
+      - sqlite
+  datasource:
+    pluralize_datatable_names: true
+    id_type: integer
+    uuid: string
+    datetime: native
+    use_stored_procedures: false
+    use_optimistic_concurrency: false
+  comments: simple
+  languages:
+    typescript:
+      casing:
+        file_names: auto
+        types: auto
+        fields: auto
+        directories: auto
+      library_reference_mode: npm
+      package_manager: auto
+    rust:
+      casing:
+        file_names: auto
+        types: auto
+        fields: auto
+        directories: auto
+      library_reference_mode: bundled
+    csharp:
+      casing:
+        file_names: auto
+        types: auto
+        fields: auto
+        directories: auto
+      library_reference_mode: bundled
+  other:
+    organize_by_feature: false
+    generate_file_hash_list: true
+    error_on_hash_overwrite: true
+    reverse_proxy: nginx
+  frontend:
+    framework: React
+    language: typescript
+    generate_validators: true
