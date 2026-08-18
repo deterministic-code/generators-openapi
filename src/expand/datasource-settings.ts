@@ -1,3 +1,6 @@
+import type { SettingsDict } from "../common/generate-context.ts";
+import { settingsBool, settingsStr } from "../common/settings.ts";
+
 const ID_TS: Record<string, string> = {
   integer: "number",
   biginteger: "bigint",
@@ -139,3 +142,25 @@ export class DatasourceSettings {
     }
   }
 }
+
+export const datasourceSettingsForSettings = (
+  settings: SettingsDict,
+): DatasourceSettings => {
+  const plural = settingsStr(settings, "datasource.pluralize_datatable_names");
+  return new DatasourceSettings({
+    idType: settingsStr(settings, "datasource.id_type"),
+    uuid: settingsStr(settings, "datasource.uuid"),
+    datetime: settingsStr(settings, "datasource.datetime"),
+    pluralizeDatatableNames:
+      plural === undefined ? undefined : plural === "true",
+    useStoredProcedures: settingsBool(
+      settings,
+      "datasource.use_stored_procedures",
+    ),
+    useOptimisticConcurrency: settingsBool(
+      settings,
+      "datasource.use_optimistic_concurrency",
+    ),
+  });
+};
+

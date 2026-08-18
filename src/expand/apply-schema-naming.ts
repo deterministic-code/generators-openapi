@@ -1,5 +1,4 @@
-import { toCase } from "../../codegen-naming.ts";
-import type { CaseFormat } from "../../read-settings.ts";
+import { toCase, type CaseFormat } from "./case.ts";
 
 interface OpenApiDoc {
   components?: { schemas?: Record<string, unknown> };

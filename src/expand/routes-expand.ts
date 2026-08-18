@@ -2,23 +2,23 @@ import npmPluralize from "pluralize";
 import {
   expandViewTypes,
   routeViewTypeDirective,
-} from "../view-expand.ts";
+} from "./view-expand.ts";
 import { camelCase, pascalCase } from "change-case";
-import { kebabPlural } from "../codegen-naming.ts";
+import { kebabPlural } from "./case.ts";
 import type {
   RawFieldEntry,
   RawTypeDef,
   RawTypeEntry,
   RawTypesDoc,
   RawIncludeEntry,
-} from "../deterministic-shapes.ts";
-import type { JsonValue } from "../read-settings.ts";
-import { compileRoutesFilter } from "./compile-filter.ts";
-import type { FilterPredicate } from "./compile-filter.ts";
+} from "./deterministic-shapes.ts";
+import type { JsonValue } from "./case.ts";
+import { compileRoutesFilter } from "../common/compile-filter.ts";
+import type { FilterPredicate } from "../common/compile-filter.ts";
 import { indexDatasourceByName } from "./datasource-index.ts";
 import { iterateCombinedRoutes } from "./combined-routes-core.ts";
 import { buildComponents, schemaToTemplate } from "./schema-build.ts";
-import { DatasourceSettings } from "../datasource-settings.ts";
+import { DatasourceSettings } from "./datasource-settings.ts";
 import { parseByFieldEntry } from "./by-field-discovery.ts";
 
 export { iterateCombinedRoutes };
@@ -120,7 +120,7 @@ interface ExpandedViewData {
 }
 
 /** The `expandRoutes` result — the flat route list plus the OpenAPI component map. */
-interface ExpandedRoutes {
+export interface ExpandedRoutes {
   routes: RouteListItem[];
   components: ComponentMap;
 }

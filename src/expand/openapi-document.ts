@@ -3,26 +3,31 @@ import {
   toVerbEntity,
   toDisplayTitle,
   toPathGroupTag,
-} from "../../lib/routes-expand.ts";
+} from "./routes-expand.ts";
 import {
   deriveEagerWriteBodyTypes,
   projectViewTypesByEagerPath,
-} from "../../view-expand.ts";
-import { buildWriteResponseSchema } from "../../lib/schema-build.ts";
-import { optimisticConcurrencyByEntity } from "../../../common/parse-routes.ts";
-import { lastSegmentIsParam } from "./openapi-doc-helpers.ts";
-import { DatasourceSettings } from "../../datasource-settings.ts";
+} from "./view-expand.ts";
+import { buildWriteResponseSchema } from "./schema-build.ts";
+import { optimisticConcurrencyByEntity } from "../common/parse-routes.ts";
+import { DatasourceSettings } from "./datasource-settings.ts";
+
+const lastSegmentIsParam = (path: string): boolean => {
+  const segs = path.split("/").filter(Boolean);
+  if (segs.length === 0) return false;
+  const last = segs[segs.length - 1];
+  return last.startsWith("{") && last.endsWith("}");
+};
 
 const DEFAULT_DS = new DatasourceSettings();
 import { applySchemaNaming } from "./apply-schema-naming.ts";
-import type { CaseFormat } from "../../read-settings.ts";
-import type { JsonValue } from "../../read-settings.ts";
+import type { CaseFormat, JsonValue } from "./case.ts";
 import {
   singleEntry,
   type RawIncludeEntry,
   type RawTypeDef,
   type RawTypesDoc,
-} from "../../deterministic-shapes.ts";
+} from "./deterministic-shapes.ts";
 
 /** A datasource type def plus the migration/seed flags this builder reads (not on the base view-type shape). */
 interface DsTypeDef extends RawTypeDef {
@@ -597,7 +602,7 @@ interface BuildEnrichedOptions {
 }
 
 /** The exact `expandRoutes` result the OpenAPI doc is built from — the definitive shapes. Returns `viewDataWithEager` too so callers needing the eager-augmented views don't recompute it. */
-function expandRoutesEnriched({
+export function expandRoutesEnriched({
   routesData,
   viewData,
   datasourceData,
@@ -668,6 +673,62 @@ export function buildEnrichedOpenApiSpec({
     version,
     paths,
     components,
+    tags,
+  });
+  applySchemaNaming(doc, schemaNaming);
+  return doc;
+}
+
+export const OPENAPI_DOC_DEFAULTS = Object.freeze({
+  title: "Deterministic Backend API",
+  version: "0.0.0",
+  naming: "original",
+  schemaNaming: "Snake" as CaseFormat,
+});
+
+/** Project a routes-api document into OpenAPI 3.0.3 (`paths` + `components.schemas`). */
+export function buildOpenApiFromRoutesApi({
+  routesApi,
+  title = OPENAPI_DOC_DEFAULTS.title,
+  version = OPENAPI_DOC_DEFAULTS.version,
+  naming = OPENAPI_DOC_DEFAULTS.naming,
+  schemaNaming = OPENAPI_DOC_DEFAULTS.schemaNaming,
+  groupByEntity = true,
+  useOptimisticConcurrency = false,
+  ds = DEFAULT_DS,
+  datasourceData,
+}: {
+  routesApi: { routes: SpecRouteEntry[]; components: ComponentMap };
+  title?: string;
+  version?: string;
+  naming?: string;
+  schemaNaming?: CaseFormat;
+  groupByEntity?: boolean;
+  useOptimisticConcurrency?: boolean;
+  ds?: DatasourceSettings;
+  datasourceData?: RawTypesDoc;
+}): OpenApiDocumentOut {
+  const dsDoc = datasourceData ?? { types: [] };
+  const ctx: BuildCtx = {
+    naming,
+    groupByEntity,
+    datasourceData: dsDoc,
+    ds,
+    useOptimisticConcurrency,
+    occByEntity: optimisticConcurrencyByEntity(
+      dsDoc,
+      useOptimisticConcurrency === true,
+    ),
+    unmountedCustomRouteNames: new Set(),
+    entitiesWithoutSeeds: collectEntitiesWithoutSeeds(dsDoc),
+    primaryKeyTypesByEntity: collectPrimaryKeyTypesByEntity(dsDoc),
+  };
+  const { paths, tags } = buildPaths(routesApi.routes, ctx);
+  const doc = buildOpenApiDocument({
+    title,
+    version,
+    paths,
+    components: routesApi.components,
     tags,
   });
   applySchemaNaming(doc, schemaNaming);
