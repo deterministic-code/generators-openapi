@@ -1,7 +1,7 @@
 import { parse } from "yaml";
-import { materializeReferenceTypes } from "../../datasource-references.ts";
-import { datasourceSettingsForSettings } from "./ts-datasource-settings.ts";
-import type { SettingsDict } from "../../settings-dict.ts";
+import type { SettingsDict } from "../common/generate-context.ts";
+import { datasourceSettingsForSettings } from "./datasource-settings.ts";
+import { materializeReferenceTypes } from "./datasource-references.ts";
 
 type SeedRows = unknown[];
 

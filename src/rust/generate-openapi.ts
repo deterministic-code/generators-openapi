@@ -13,7 +13,9 @@ export const generate = async (
 ): Promise<GenerateEntry[]> => {
   const crateName =
     settingsStr(ctx.settings, "languages.rust.crate_name") ?? "consumer";
-  const [jsonEntry] = await generateJson(ctx);
+  const jsonEntry = (await generateJson(ctx)).find(
+    (entry) => entry.kind === "content" && entry.filename === "openapi.json",
+  );
   if (jsonEntry === undefined || jsonEntry.kind !== "content") {
     throw new Error("openapi json lane did not emit openapi.json");
   }

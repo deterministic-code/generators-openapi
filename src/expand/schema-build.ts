@@ -3,14 +3,14 @@ import {
   parseFieldType,
   type ParsedFieldType,
   type Enrichment,
-} from "../view-expand.ts";
-import { DatasourceSettings } from "../datasource-settings.ts";
+} from "./view-expand.ts";
+import { DatasourceSettings } from "./datasource-settings.ts";
 import type {
   RawFieldDef,
   RawTypeDef,
   RawTypesDoc,
-} from "../deterministic-shapes.ts";
-import { FieldConverter, fieldConverter } from "../../field-converter.ts";
+} from "./deterministic-shapes.ts";
+import { FieldConverter, fieldConverter } from "../field-converter.ts";
 
 const SAMPLE_CONVERTER = new FieldConverter(fieldConverter);
 

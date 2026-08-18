@@ -1,12 +1,12 @@
 import { camelCase } from "change-case";
-import { kebabPlural } from "../codegen-naming.ts";
-import { computeEnrichmentsForDatasourceType } from "../view-expand.ts";
-import type { Enrichment } from "../view-expand.ts";
+import { kebabPlural } from "./case.ts";
+import { computeEnrichmentsForDatasourceType } from "./view-expand.ts";
+import type { Enrichment } from "./view-expand.ts";
 import type {
   RawFieldEntry,
   RawTypeDef,
   RawTypesDoc,
-} from "../deterministic-shapes.ts";
+} from "./deterministic-shapes.ts";
 import { indexDatasourceByName as indexDatasource } from "./datasource-index.ts";
 
 /** A single `combined_types` child as authored in a routes doc — either a bare entity name or a `{ name: { via, target, route } }` override map. Keys stay in wire casing. */

@@ -31,7 +31,7 @@
     "src"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.build.json && mkdir -p dist/openapi dist/templates && cp src/openapi/default-settings.yaml dist/openapi/ && cp -R src/templates dist/",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && mkdir -p dist/templates && cp -R src/templates dist/",
     "prepare": "npm run build",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "test": "node --experimental-strip-types --test src/generate-openapi.integration.test.ts src/rust/generate-openapi.integration.test.ts"
