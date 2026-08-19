@@ -1,0 +1,19 @@
+types:
+  - role:
+      datasource_type: readonly-lookup
+      fields:
+        - name:
+            type: string
+            is_unique: true
+  - user:
+      fields:
+        - email:
+            type: string
+            is_unique: true
+            size: 256
+        - role_id:
+            type: number
+            references: role.id
+        - nick_name:
+            type: string
+            is_nullable: true

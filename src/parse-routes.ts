@@ -15,7 +15,6 @@ import {
 import { isRecord, namedEntries } from "@deterministic-code/generators-common/yaml-entry";
 
 export const ROUTES_YAML = "routes.yaml";
-export const SERVICES_YAML = "services.yaml";
 
 export type RouteByField = {
   byField: string;
@@ -39,7 +38,7 @@ export type CustomRouteEntry = {
   name: string;
 };
 
-export type DirectFkDescriptor = {
+type DirectFkDescriptor = {
   kind: "direct-fk";
   parent: string;
   parentParam: string;
@@ -50,7 +49,7 @@ export type DirectFkDescriptor = {
   segmentTail: string;
 };
 
-export type M2mDescriptor = {
+type M2mDescriptor = {
   kind: "m2m";
   parent: string;
   parentParam: string;
@@ -193,58 +192,6 @@ const routeViewTypeDirective = (
 
 const hasNoRouteSurface = (candidate: { target?: string | null }): boolean =>
   candidate.target === "None";
-
-export const entityUsesOptimisticConcurrency = (
-  table: { datasourceType?: string | null; optimisticConcurrency?: boolean },
-  globalFlag: boolean,
-): boolean => {
-  if (table.datasourceType === "many-to-many") return false;
-  if (table.datasourceType === "readonly-lookup") return false;
-  if (table.optimisticConcurrency !== undefined) {
-    return table.optimisticConcurrency;
-  }
-  return globalFlag === true;
-};
-
-type OccDatasourceDoc = {
-  types?: Array<
-    Record<
-      string,
-      {
-        datasource_type?: string | null;
-        use_optimistic_concurrency?: boolean;
-      }
-    >
-  >;
-};
-
-/** entityName → effective OCC from a raw datasource_types doc. */
-export const optimisticConcurrencyByEntity = (
-  data: OccDatasourceDoc | null | undefined,
-  globalFlag: boolean,
-): Map<string, boolean> => {
-  const out = new Map<string, boolean>();
-  const types = Array.isArray(data?.types) ? data.types : [];
-  for (const entry of types) {
-    const pair = Object.entries(entry)[0];
-    if (!pair) continue;
-    const [name, def] = pair;
-    out.set(
-      name,
-      entityUsesOptimisticConcurrency(
-        {
-          datasourceType: def?.datasource_type,
-          optimisticConcurrency:
-            def?.use_optimistic_concurrency === undefined
-              ? undefined
-              : def.use_optimistic_concurrency === true,
-        },
-        globalFlag,
-      ),
-    );
-  }
-  return out;
-};
 
 const columnIsUnique = (
   ds: DatasourceType,
@@ -682,7 +629,7 @@ const collectNestedDescriptors = (
   return nested;
 };
 
-export const parseRoutes = (args: {
+const parseRoutes = (args: {
   routesYaml: string;
   views: ViewType[];
   datasources: DatasourceType[];

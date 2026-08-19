@@ -1,0 +1,24 @@
+types:
+  - status:
+      datasource_type: readonly-lookup
+      fields:
+        - name:
+            type: string
+            is_unique: true
+  - project:
+      use_optimistic_concurrency: true
+      fields:
+        - name:
+            type: string
+            is_unique: true
+  - task:
+      use_optimistic_concurrency: true
+      fields:
+        - title:
+            type: string
+        - project_id:
+            type: number
+            references: project.id
+        - status_id:
+            type: number
+            references: status.id

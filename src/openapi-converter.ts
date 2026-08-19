@@ -1,12 +1,10 @@
 import {
   OPENAPI_DOC_DEFAULTS,
-  buildOpenApiFromRoutesApi,
-  type OpenApiDocumentOut,
+  renderOpenApiFromRoutesApi,
 } from "./openapi-document.ts";
 import type { RoutesApiDoc } from "./common/routes-api.ts";
 
 export { OPENAPI_DOC_DEFAULTS };
-export type { OpenApiDocumentOut };
 
 export type OpenApiConverterOptions = {
   title?: string;
@@ -17,7 +15,7 @@ export type OpenApiConverterOptions = {
   settings?: Record<string, string>;
 };
 
-/** Projects a routes-api document into an OpenAPI 3.0.3 document. */
+/** Projects a routes-api document into an OpenAPI 3.0.3 JSON document. */
 export class OpenApiConverter {
   #options: OpenApiConverterOptions;
 
@@ -25,8 +23,8 @@ export class OpenApiConverter {
     this.#options = options;
   }
 
-  convert(routesApi: RoutesApiDoc): OpenApiDocumentOut {
-    return buildOpenApiFromRoutesApi({
+  convert(routesApi: RoutesApiDoc): string {
+    return renderOpenApiFromRoutesApi({
       routesApi,
       title: this.#options.title ?? OPENAPI_DOC_DEFAULTS.title,
       version: this.#options.version ?? OPENAPI_DOC_DEFAULTS.version,

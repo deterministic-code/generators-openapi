@@ -1,0 +1,5 @@
+types:
+  - user:
+      fields:
+        - email:
+            type: string

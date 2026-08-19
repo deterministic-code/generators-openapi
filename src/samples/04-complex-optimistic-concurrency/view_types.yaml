@@ -1,0 +1,29 @@
+includes:
+  - datasource_types:
+      include: "*"
+      auto_enrich: true
+types:
+  - project:
+      inherits: datasource_types.project
+      fields:
+        - tasks:
+            type: datasource_types.task[]
+            references: datasource_types.task.project_id
+  - project_eager_body:
+      inherits: datasource_types.project
+      fields:
+        - tasks:
+            type: datasource_types.task[]
+            references: datasource_types.task.project_id
+  - project_eager_create_body:
+      inherits: datasource_types.project
+      fields:
+        - tasks:
+            type: datasource_types.task[]
+            references: datasource_types.task.project_id
+  - project_eager_patch_body:
+      inherits: datasource_types.project
+      fields:
+        - tasks:
+            type: datasource_types.task[]
+            references: datasource_types.task.project_id

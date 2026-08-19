@@ -76,11 +76,6 @@ const kebabPlural = (name: string): string => {
   return parts.join("-");
 };
 
-const isWriteDto = (name: string): boolean =>
-  name.startsWith("update_") ||
-  name.startsWith("create_") ||
-  EAGER_SUFFIXES.some((suffix) => name.endsWith(suffix));
-
 const isEagerName = (name: string): boolean =>
   EAGER_SUFFIXES.some((suffix) => name.endsWith(suffix));
 
@@ -193,6 +188,10 @@ const buildInheritedSchema = (
   ds: { idType: string },
 ): RoutesApiSchema => {
   const omit = omitForView(view, dsType);
+  const write =
+    view.name.startsWith("update_") ||
+    view.name.startsWith("create_") ||
+    isEagerName(view.name);
   const properties: Record<string, RoutesApiSchema> = {};
   const required: string[] = [];
   const declared = new Set(dsType.fields.map((f) => f.name));
@@ -200,18 +199,18 @@ const buildInheritedSchema = (
     if (omit.has(col.name) || declared.has(col.name)) continue;
     properties[col.name] =
       col.name === "id" ? idSchema(ds.idType) : schemaForPrimitive(col.type);
-    if (isWriteDto(view.name)) required.push(col.name);
+    if (write) required.push(col.name);
   }
   for (const field of dsType.fields) {
     if (omit.has(field.name)) continue;
     properties[field.name] = datasourceFieldSchema(field, ds);
-    if (isWriteDto(view.name) && fieldIsRequired(field)) {
+    if (write && fieldIsRequired(field)) {
       required.push(field.name);
     }
   }
   for (const field of view.fields) {
     properties[field.name] = viewFieldSchema(field);
-    if (isWriteDto(view.name) && !field.isNullable) required.push(field.name);
+    if (write && !field.isNullable) required.push(field.name);
   }
   for (const enrichment of view.enrichments) {
     const named: RoutesApiSchema = {
@@ -222,7 +221,7 @@ const buildInheritedSchema = (
       ? { ...named, nullable: true }
       : named;
   }
-  return isWriteDto(view.name)
+  return write
     ? { type: "object", required, properties }
     : { type: "object", properties };
 };
@@ -608,7 +607,7 @@ const combinedParentsWithRoute = (routesYaml: string): Map<string, string> => {
   return out;
 };
 
-export const parseRoutesApi = (args: {
+const parseRoutesApi = (args: {
   parsed: ParsedRoutes;
   views: ViewType[];
   settings: Record<string, string>;

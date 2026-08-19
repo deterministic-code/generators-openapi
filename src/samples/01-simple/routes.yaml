@@ -1,0 +1,4 @@
+includes:
+  - view_type_routes:
+      filter: 'type is view_type || type is datasource_type'
+routes: []

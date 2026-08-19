@@ -49,6 +49,12 @@ describe("generate-openapi", () => {
     assert.equal(json.info.title, "Demo");
     assert.equal(json.info.version, "2.0");
     assert.ok(json.paths["/api/users"]);
+    assert.ok(json.paths["/api/users/{id}"]);
+    assert.equal(
+      (json.paths["/api/users"] as { get?: { operationId?: string } }).get
+        ?.operationId,
+      "userList",
+    );
     assert.deepEqual(
       entries.filter((e) => e.kind === "content").map((e) => e.filename),
       ["openapi.json"],

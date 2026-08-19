@@ -61,7 +61,7 @@ const int = (v: unknown): number | undefined =>
 const strings = (v: unknown): string[] =>
   Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
 
-export const parseFieldType = (
+const parseFieldType = (
   raw: string,
 ): { kind: ViewFieldKind; base: string; isArray: boolean } => {
   const isArray = raw.endsWith("[]");
@@ -347,7 +347,7 @@ const normalize = (view: RawView): ViewType => {
   };
 };
 
-export const parseViewTypes = (args: {
+const parseViewTypes = (args: {
   viewYaml: string;
   datasourceYaml?: string;
 }): ViewType[] => {

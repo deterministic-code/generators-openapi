@@ -1,0 +1,39 @@
+{
+  "summary": {{summaryJson}},
+  "operationId": {{operationIdJson}}{{#hasOperationTags}},
+  "tags": [
+{{#operationTags}}
+    {{nameJson}}{{^last}},{{/last}}
+{{/operationTags}}
+  ]{{/hasOperationTags}}{{#hasParameters}},
+  "parameters": [
+{{#parameters}}
+    {
+      "name": {{nameJson}},
+      "in": "path",
+      "required": true,
+      "schema": {
+        "type": "string"
+      }
+    }{{^last}},{{/last}}
+{{/parameters}}
+  ]{{/hasParameters}}{{#hasRequestBody}},
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": {{&requestSchemaJson}}
+      }
+    }
+  }{{/hasRequestBody}},
+  "responses": {
+    "200": {
+      "description": "OK"{{#hasResponseBody}},
+      "content": {
+        "application/json": {
+          "schema": {{&responseSchemaJson}}
+        }
+      }{{/hasResponseBody}}
+    }
+  }
+}

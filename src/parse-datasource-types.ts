@@ -218,24 +218,3 @@ export const primaryKeyFor = (
   if (custom === undefined) return { column: "id", idType: defaultIdType };
   return { column: custom.name, idType: idTypeFromFieldType(custom.type) };
 };
-
-/** Unique lookup columns: `is_unique` fields plus single-column unique indexes. */
-export const uniqueLookupFields = (
-  type: DatasourceType,
-): Array<{ field: string; type: string; size?: number }> => {
-  const out: Array<{ field: string; type: string; size?: number }> = [];
-  const add = (name: string) => {
-    if (out.some((e) => e.field === name)) return;
-    const f = type.fields.find((x) => x.name === name);
-    out.push({
-      field: name,
-      type: f?.type ?? "string",
-      ...(f?.size !== undefined ? { size: f.size } : {}),
-    });
-  };
-  for (const f of type.fields) {
-    if (f.isUnique) add(f.name);
-  }
-  for (const name of type.uniqueIndexFields) add(name);
-  return out;
-};
