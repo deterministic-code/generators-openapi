@@ -1,6 +1,5 @@
 import { parse } from "yaml";
-import { referenceFieldShape } from "./datasource-settings.ts";
-import { isRecord, namedEntries } from "./yaml-entry.ts";
+import { isRecord, namedEntries } from "@deterministic-code/generators-common/yaml-entry";
 
 export type DatasourceField = {
   name: string;
@@ -90,7 +89,11 @@ const inheritedType = (
   if (parent === undefined) return undefined;
   const pk = parent.fields.find((f) => f.isPrimaryKey);
   if (pk !== undefined) return pk.name === column ? pk.type : undefined;
-  return column === "id" ? referenceFieldShape(idType).type : undefined;
+  if (column !== "id") return undefined;
+  if (idType === "biginteger" || idType === "uuid" || idType === "string") {
+    return idType;
+  }
+  return "number";
 };
 
 const fieldType = (

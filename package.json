@@ -4,10 +4,6 @@
   "description": "OpenAPI generator pack for the deterministic toolchain: openapi.json emit and language wrappers.",
   "type": "module",
   "exports": {
-    "./generate-context": {
-      "types": "./dist/generate-context.d.ts",
-      "import": "./dist/generate-context.js"
-    },
     "./generate-openapi": {
       "types": "./dist/generate-openapi.d.ts",
       "import": "./dist/generate-openapi.js"
@@ -37,6 +33,7 @@
     "test": "node --experimental-strip-types --test src/generate-openapi.integration.test.ts src/rust/generate-openapi.integration.test.ts"
   },
   "dependencies": {
+    "@deterministic-code/generators-common": "github:deterministic-code/generators-common",
     "change-case": "^5.4.4",
     "js-yaml": "^4.1.0",
     "mustache": "^4.2.0",

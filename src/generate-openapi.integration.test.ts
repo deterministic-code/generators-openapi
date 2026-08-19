@@ -1,9 +1,9 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { memoryReader } from "./common/deterministic-reader.ts";
-import type { GenerateEntry } from "./common/generate-entry.ts";
+import { memoryReader } from "@deterministic-code/generators-common/deterministic-reader";
+import type { GenerateEntry } from "@deterministic-code/generators-common/generate-entry";
 import { generate } from "./generate-openapi.ts";
-import { RoutesApiConverter } from "./routes-api-converter.ts";
+import { loadRoutesApi } from "./common/routes-api-converter.ts";
 
 const textOf = (entries: GenerateEntry[], path: string): string => {
   const hit = entries.find((e) => e.kind === "content" && e.filename === path);
@@ -56,7 +56,7 @@ describe("generate-openapi", () => {
   });
 
   it("projects OpenAPI from the routes-api IR", async () => {
-    const routesApi = await new RoutesApiConverter().fromReader({
+    const routesApi = await loadRoutesApi({
       reader: memoryReader(fixtures),
       settings: {},
     });

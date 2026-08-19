@@ -1,6 +1,6 @@
 import { parse } from "yaml";
 import { DATASOURCE_TYPES_YAML } from "./parse-datasource-types.ts";
-import { isFiniteInt, isRecord, namedEntries } from "./yaml-entry.ts";
+import { isFiniteInt, isRecord, namedEntries } from "@deterministic-code/generators-common/yaml-entry";
 
 export const VIEW_TYPES_YAML = "view_types.yaml";
 

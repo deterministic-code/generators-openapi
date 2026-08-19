@@ -1,7 +1,7 @@
 import { snakeCase } from "change-case";
 import pluralize from "pluralize";
 import { parse } from "yaml";
-import { compileRoutesFilter } from "./compile-filter.ts";
+import { compileRoutesFilter } from "@deterministic-code/generators-common/compile-filter";
 import {
   DATASOURCE_TYPES_YAML,
   parseDatasourceTypes,
@@ -12,7 +12,7 @@ import {
   VIEW_TYPES_YAML,
   type ViewType,
 } from "./parse-view-types.ts";
-import { isRecord, namedEntries } from "./yaml-entry.ts";
+import { isRecord, namedEntries } from "@deterministic-code/generators-common/yaml-entry";
 
 export const ROUTES_YAML = "routes.yaml";
 export const SERVICES_YAML = "services.yaml";
