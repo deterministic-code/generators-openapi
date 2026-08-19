@@ -9,7 +9,7 @@ alwaysApply: false
 Write TypeScript functions as arrows, including exports and helpers.
 
 ```typescript
-import type { GenerateContext } from "./common/generate-context.ts";
+import type { GenerateContext } from "@deterministic-code/generators-common/generate-context";
 
 export const generate = async (
   ctx: GenerateContext,

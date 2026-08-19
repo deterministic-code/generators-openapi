@@ -1,4 +1,4 @@
-import type { JsonValue } from "./expand/case.ts";
+import type { JsonValue } from "@deterministic-code/generators-common/yaml-entry";
 
 /** Contract version stamped on every expanded routes-api document. */
 export const ROUTES_API_VERSION = "1.0.0";
@@ -15,6 +15,7 @@ export type RoutesApiSchema = {
   enum?: unknown[];
   default?: unknown;
   maxLength?: number;
+  oneOf?: RoutesApiSchema[];
   "x-references"?: string;
 };
 
