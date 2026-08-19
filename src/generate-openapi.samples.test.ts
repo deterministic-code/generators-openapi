@@ -4,11 +4,11 @@ import { describe, it } from "node:test";
 import { memoryReader } from "@deterministic-code/generators-common/deterministic-reader";
 import type { GenerateEntry } from "@deterministic-code/generators-common/generate-entry";
 import { generate } from "./generate-openapi.ts";
-import { loadRoutesApi } from "./common/routes-api-converter.ts";
+import { loadRoutesApi } from "@deterministic-code/generators-common/routes-api-converter";
+import { SpecificationParser } from "@deterministic-code/generators-common/specification-parser";
+import type { RoutesApiDoc } from "@deterministic-code/generators-common/routes-api";
 import { OpenApiConverter } from "./openapi-converter.ts";
 import { renderOpenApiFromRoutesApi } from "./openapi-document.ts";
-import { parseDatasourceTypes } from "./parse-datasource-types.ts";
-import type { RoutesApiDoc } from "./common/routes-api.ts";
 
 type OpenApiDoc = {
   openapi: string;
@@ -91,8 +91,8 @@ describe("generate-openapi samples", () => {
     assert.ok(json.paths["/api/projects"]);
     assert.ok(json.paths["/api/projects/{id}"]);
     assert.ok(json.paths["/api/projects/name/{name}"]);
-    assert.ok(json.paths["/api/projects/{projectId}/tasks"]);
-    assert.ok(json.paths["/api/projects/{projectId}/tasks/{id}"]);
+    assert.ok(json.paths["/api/projects/{id}/tasks"]);
+    assert.ok(json.paths["/api/projects/{id}/tasks/{id}"]);
     assert.ok(routesApi.components.project_eager_body);
     assert.ok(routesApi.components.project_eager_create_body);
     assert.ok(json.paths["/api/projects"]?.post?.requestBody);
@@ -103,7 +103,7 @@ describe("generate-openapi samples", () => {
       "04-complex-optimistic-concurrency",
       { application_name: "Occ" },
     );
-    const types = parseDatasourceTypes({
+    const types = new SpecificationParser().parseDatasourceTypes({
       yaml: files["datasource_types.yaml"]!,
       idType: "integer",
     });

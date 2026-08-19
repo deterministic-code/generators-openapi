@@ -4,7 +4,7 @@ import {
   OPENAPI_DOC_DEFAULTS,
   OpenApiConverter,
 } from "./openapi-converter.ts";
-import { loadRoutesApi } from "./common/routes-api-converter.ts";
+import { loadRoutesApi } from "@deterministic-code/generators-common/routes-api-converter";
 
 export const generate = async (
   ctx: GenerateContext,

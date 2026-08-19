@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { memoryReader } from "@deterministic-code/generators-common/deterministic-reader";
 import type { GenerateEntry } from "@deterministic-code/generators-common/generate-entry";
 import { generate } from "./generate-openapi.ts";
-import { loadRoutesApi } from "./common/routes-api-converter.ts";
+import { loadRoutesApi } from "@deterministic-code/generators-common/routes-api-converter";
 
 const textOf = (entries: GenerateEntry[], path: string): string => {
   const hit = entries.find((e) => e.kind === "content" && e.filename === path);

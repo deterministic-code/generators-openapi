@@ -2,7 +2,7 @@ import {
   OPENAPI_DOC_DEFAULTS,
   renderOpenApiFromRoutesApi,
 } from "./openapi-document.ts";
-import type { RoutesApiDoc } from "./common/routes-api.ts";
+import type { RoutesApiDoc } from "@deterministic-code/generators-common/routes-api";
 
 export { OPENAPI_DOC_DEFAULTS };
 

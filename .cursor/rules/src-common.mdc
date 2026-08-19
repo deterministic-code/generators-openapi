@@ -1,12 +1,12 @@
 ---
-description: Shared helpers come from generators-common; pack-local files stay in src/common.
+description: Shared helpers come from generators-common; this pack only projects OpenAPI.
 alwaysApply: true
 ---
 
 # src/common
 
-Cross-pack helpers (`deterministic-reader`, `generate-entry`, `fill`, `yaml-entry`, `compile-filter`, `default-token`) live in `@deterministic-code/generators-common`. Import them from that package. Do not re-export them from this repo.
+Cross-pack helpers (`deterministic-reader`, `generate-entry`, `fill`, `yaml-entry`, `compile-filter`, `default-token`, `specification-parser`, `routes-api`) live in `@deterministic-code/generators-common`. Import them from that package. Do not re-export them from this repo.
 
-Keep pack-specific modules here: `routes-api`. YAML parse helpers live next to `src/generate-openapi.ts`, not under `src/common/`. Do not copy generators-common sources back into this repo. Do not put new files under `src/sdk/`.
+This pack only projects the routes-api IR into OpenAPI templates. Do not copy generators-common sources back into this repo. Do not put new files under `src/sdk/`.
 
 `generate` is the only export each lane has. It takes `GenerateContext`: `{ reader, settings }` where `reader` is `{ read, exists }` (`IDeterministicReader`) and `settings` is the flat string dict (`application_name`, …). The host never supplies pack-normalized types — each lane reads YAML and parses it. Do not add per-lane aliases (`generateBackendApp`, `generateDatasourceTypes`, …) or host flags (`pinProjectRoot`, `rustModuleWiring`, `assembleAfterStep`). Import `GenerateEntry` from `@deterministic-code/generators-common/generate-entry`, not from a lane module.

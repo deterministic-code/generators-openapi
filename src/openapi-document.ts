@@ -5,7 +5,7 @@ import type {
   RoutesApiDoc,
   RoutesApiRouteDef,
   RoutesApiSchema,
-} from "./common/routes-api.ts";
+} from "@deterministic-code/generators-common/routes-api";
 import { openapiTmpl, operationTmpl } from "./resources/openapi.ts";
 
 export const OPENAPI_DOC_DEFAULTS = Object.freeze({
@@ -15,7 +15,8 @@ export const OPENAPI_DOC_DEFAULTS = Object.freeze({
   schemaNaming: "Snake",
 });
 
-const pathParamRe = (): RegExp => /:([A-Za-z_][A-Za-z0-9_]*)/g;
+const expressParamRe = (): RegExp => /:([A-Za-z_][A-Za-z0-9_]*)/g;
+const braceParamRe = (): RegExp => /\{([A-Za-z_][A-Za-z0-9_]*)\}/g;
 
 const withLast = <T extends Record<string, unknown>>(
   items: T[],
@@ -38,13 +39,13 @@ const indentBlock = (text: string, indent: number): string => {
     .join("\n");
 };
 
-const openApiPath = (expressPath: string): string =>
-  expressPath.replace(pathParamRe(), "{$1}");
+const openApiPath = (path: string): string =>
+  path.replace(expressParamRe(), "{$1}");
 
-const pathParamNames = (expressPath: string): string[] => {
+const pathParamNames = (path: string): string[] => {
   const names: string[] = [];
   const seen = new Set<string>();
-  for (const match of expressPath.matchAll(pathParamRe())) {
+  for (const match of openApiPath(path).matchAll(braceParamRe())) {
     const name = match[1]!;
     if (seen.has(name)) continue;
     seen.add(name);
