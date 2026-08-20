@@ -1,0 +1,5 @@
+includes:
+  - datasource_types:
+      include: "*"
+      auto_enrich: true
+types: []

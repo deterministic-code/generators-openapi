@@ -1,0 +1,13 @@
+includes:
+  - view_type_routes:
+      filter: 'type is view_type || type is datasource_type'
+      eager_path:
+        - project.tasks
+      eager_write_path:
+        - project.tasks
+routes:
+  - get_projects_by_name:
+combined_routes:
+  - project:
+      combined_types:
+        - task

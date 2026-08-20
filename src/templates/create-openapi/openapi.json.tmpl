@@ -1,0 +1,32 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": {{titleJson}},
+    "version": {{versionJson}}
+  },
+{{#hasDocTags}}
+  "tags": [
+{{#docTags}}
+    {
+      "name": {{nameJson}}
+    }{{^last}},{{/last}}
+{{/docTags}}
+  ],
+{{/hasDocTags}}
+  "paths": {
+{{#paths}}
+    {{pathJson}}: {
+{{#operations}}
+      {{methodJson}}: {{&operationJson}}{{^last}},{{/last}}
+{{/operations}}
+    }{{^last}},{{/last}}
+{{/paths}}
+  },
+  "components": {
+    "schemas": {
+{{#schemas}}
+      {{nameJson}}: {{&schemaJson}}{{^last}},{{/last}}
+{{/schemas}}
+    }
+  }
+}

@@ -1,0 +1,22 @@
+types:
+  - status:
+      datasource_type: readonly-lookup
+      fields:
+        - name:
+            type: string
+            is_unique: true
+  - project:
+      fields:
+        - name:
+            type: string
+            is_unique: true
+  - task:
+      fields:
+        - title:
+            type: string
+        - project_id:
+            type: number
+            references: project.id
+        - status_id:
+            type: number
+            references: status.id

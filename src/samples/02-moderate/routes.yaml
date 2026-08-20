@@ -1,0 +1,13 @@
+includes:
+  - view_type_routes:
+      filter: 'type is view_type || type is datasource_type'
+routes:
+  - users_by_email:
+  - ping:
+      method: POST
+      path: /api/ping
+      request: missing_shape
+      response: missing_shape
+  - clone_user:
+      method: POST
+      path: /api/users/:id/clone/:id

@@ -4,13 +4,14 @@
   "description": "OpenAPI generator pack for the deterministic toolchain: openapi.json emit and language wrappers.",
   "type": "module",
   "exports": {
+    "./package.json": "./package.json",
+    "./generate-openapi-docs": {
+      "types": "./dist/generate-openapi-docs.d.ts",
+      "import": "./dist/generate-openapi-docs.js"
+    },
     "./generate-openapi": {
       "types": "./dist/generate-openapi.d.ts",
       "import": "./dist/generate-openapi.js"
-    },
-    "./rust/generate-openapi": {
-      "types": "./dist/rust/generate-openapi.d.ts",
-      "import": "./dist/rust/generate-openapi.js"
     },
     "./*": {
       "types": "./dist/*.d.ts",
@@ -19,32 +20,24 @@
     "./*/*": {
       "types": "./dist/*/*.d.ts",
       "import": "./dist/*/*.js"
-    },
-    "./package.json": "./package.json"
+    }
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "tsconfig.build.json"
   ],
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.build.json && mkdir -p dist/templates && cp -R src/templates dist/",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json && cp -R src/templates dist/",
     "prepare": "npm run build",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
-    "test": "node --experimental-strip-types --test src/generate-openapi.integration.test.ts src/rust/generate-openapi.integration.test.ts"
+    "test": "node --experimental-strip-types --test src/generate-openapi.integration.test.ts src/generate-openapi.samples.test.ts"
   },
   "dependencies": {
-    "@deterministic-code/generators-common": "github:deterministic-code/generators-common",
-    "change-case": "^5.4.4",
-    "js-yaml": "^4.1.0",
-    "mustache": "^4.2.0",
-    "pluralize": "^8.0.0",
-    "yaml": "^2.6.0"
+    "@deterministic-code/generators-common": "github:deterministic-code/generators-common"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.9",
-    "@types/mustache": "^4.2.6",
     "@types/node": "^22.10.0",
-    "@types/pluralize": "^0.0.33",
     "typescript": "^5.8.0"
   }
 }
