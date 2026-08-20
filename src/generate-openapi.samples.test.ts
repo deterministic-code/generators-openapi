@@ -5,7 +5,7 @@ import { memoryReader } from "@deterministic-code/generators-common/deterministi
 import type { GenerateEntry } from "@deterministic-code/generators-common/generate-entry";
 import { generate } from "./generate-openapi.ts";
 import { loadRoutesApi } from "@deterministic-code/generators-common/routes-api-converter";
-import { SpecificationParser } from "@deterministic-code/generators-common/specification-parser";
+import { DeterministicParser } from "@deterministic-code/generators-common/specification-parser";
 import type { RoutesApiDoc } from "@deterministic-code/generators-common/routes-api";
 import { OpenApiConverter } from "./openapi-converter.ts";
 import { renderOpenApiFromRoutesApi } from "./openapi-document.ts";
@@ -103,10 +103,13 @@ describe("generate-openapi samples", () => {
       "04-complex-optimistic-concurrency",
       { application_name: "Occ" },
     );
-    const types = new SpecificationParser().parseDatasourceTypes({
-      yaml: files["datasource_types.yaml"]!,
-      idType: "integer",
-    });
+    const types = (
+      await DeterministicParser(
+        memoryReader({
+          "datasource_types.yaml": files["datasource_types.yaml"]!,
+        }),
+      ).parse({ "datasource.id_type": "integer" })
+    ).datasourceTypes;
     assert.equal(
       types.find((t) => t.name === "project")?.optimisticConcurrency,
       true,
