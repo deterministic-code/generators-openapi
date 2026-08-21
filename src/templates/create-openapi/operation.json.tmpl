@@ -16,7 +16,17 @@
         "type": "string"
       }
     }{{^last}},{{/last}}
-{{/parameters}}
+{{/parameters}}{{#hasIfMatch}}{{#hasPathParameters}},{{/hasPathParameters}}
+    {
+      "name": "If-Match",
+      "in": "header",
+      "required": true,
+      "description": "The resource `updated` timestamp from the last GET.",
+      "schema": {
+        "type": "string",
+        "format": "date-time"
+      }
+    }{{/hasIfMatch}}
   ]{{/hasParameters}}{{#hasRequestBody}},
   "requestBody": {
     "required": true,
@@ -34,6 +44,12 @@
           "schema": {{&responseSchemaJson}}
         }
       }{{/hasResponseBody}}
-    }
+    }{{#hasIfMatch}},
+    "412": {
+      "description": "Precondition Failed — If-Match does not match the current `updated` timestamp"
+    },
+    "428": {
+      "description": "Precondition Required — If-Match header is required"
+    }{{/hasIfMatch}}
   }
 }

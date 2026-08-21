@@ -1,10 +1,10 @@
 import { fill } from "@deterministic-code/generators-common/fill";
-import { namedEntries } from "@deterministic-code/generators-common/yaml-entry";
-import type {
-  RoutesApiBody,
-  RoutesApiDoc,
-  RoutesApiRouteDef,
-  RoutesApiSchema,
+import {
+  namedRoutes,
+  type RoutesApiBody,
+  type RoutesApiDoc,
+  type RoutesApiRouteDef,
+  type RoutesApiSchema,
 } from "@deterministic-code/generators-common/routes-api";
 import { openapiTmpl, operationTmpl } from "./resources/openapi.ts";
 
@@ -65,6 +65,8 @@ const namedJson = (name: string): NamedJson => ({
   nameJson: JSON.stringify(name),
 });
 
+const OCC_METHODS = new Set(["PUT", "PATCH", "DELETE"]);
+
 const operationTokens = (
   routeName: string,
   route: RoutesApiRouteDef,
@@ -75,12 +77,17 @@ const operationTokens = (
   const parameters = pathParamNames(route.path);
   const operationTags =
     groupByEntity && route.entity !== null ? [route.entity] : [];
+  const hasIfMatch =
+    route.optimisticConcurrency === true &&
+    OCC_METHODS.has(route.method.toUpperCase());
   return {
     summaryJson: JSON.stringify(routeName),
     operationIdJson: JSON.stringify(routeName),
     hasOperationTags: operationTags.length > 0,
     operationTags: withLast(operationTags.map(namedJson)),
-    hasParameters: parameters.length > 0,
+    hasPathParameters: parameters.length > 0,
+    hasIfMatch,
+    hasParameters: parameters.length > 0 || hasIfMatch,
     parameters: withLast(parameters.map(namedJson)),
     hasRequestBody: requestSchema !== null,
     requestSchemaJson:
@@ -112,11 +119,7 @@ export const renderOpenApiFromRoutesApi = ({
 }): string => {
   const buckets = new Map<string, PathBucket>();
   const tagSet = new Set<string>();
-  for (const [routeName, route] of namedEntries(routesApi.routes)) {
-    if (route === null || typeof route !== "object" || Array.isArray(route)) {
-      continue;
-    }
-    const def = route as RoutesApiRouteDef;
+  for (const [routeName, def] of namedRoutes(routesApi.routes)) {
     const path = openApiPath(def.path);
     const bucket = buckets.get(path) ?? { path, operations: [] };
     if (!buckets.has(path)) buckets.set(path, bucket);

@@ -34,7 +34,7 @@
     "test": "node --experimental-strip-types --test src/generate-openapi.integration.test.ts src/generate-openapi.samples.test.ts"
   },
   "dependencies": {
-    "@deterministic-code/generators-common": "github:deterministic-code/generators-common"
+    "@deterministic-code/generators-common": "github:deterministic-code/generators-common#main"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

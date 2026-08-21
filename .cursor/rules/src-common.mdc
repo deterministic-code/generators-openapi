@@ -5,7 +5,7 @@ alwaysApply: true
 
 # src/common
 
-Cross-pack helpers (`deterministic-reader`, `generate-entry`, `fill`, `yaml-entry`, `compile-filter`, `default-token`, `specification-parser`, `routes-api`) live in `@deterministic-code/generators-common`. Import them from that package. Do not re-export them from this repo.
+Cross-pack helpers (`deterministic-reader`, `generate-entry`, `fill`, `compile-filter`, `default-token`, `specification-parser`, `routes-api`) live in `@deterministic-code/generators-common`. Import them from that package. Do not re-export them from this repo.
 
 This pack only projects the routes-api IR into OpenAPI templates. Do not copy generators-common sources back into this repo. Do not put new files under `src/sdk/`.
 

@@ -10,11 +10,46 @@ import type { RoutesApiDoc } from "@deterministic-code/generators-common/routes-
 import { OpenApiConverter } from "./openapi-converter.ts";
 import { renderOpenApiFromRoutesApi } from "./openapi-document.ts";
 
+type OpenApiParameter = {
+  name: string;
+  in: string;
+  required?: boolean;
+  schema?: { type?: string; format?: string };
+};
+
+type OpenApiOperation = {
+  operationId?: string;
+  requestBody?: unknown;
+  parameters?: OpenApiParameter[];
+  responses?: Record<string, { description?: string }>;
+};
+
 type OpenApiDoc = {
   openapi: string;
   info: { title: string; version: string };
   tags?: { name: string }[];
-  paths: Record<string, Record<string, { operationId?: string; requestBody?: unknown }>>;
+  paths: Record<string, Record<string, OpenApiOperation | undefined>>;
+};
+
+const ifMatchHeader = (
+  op: OpenApiOperation | undefined,
+): OpenApiParameter | undefined =>
+  op?.parameters?.find((p) => p.name === "If-Match" && p.in === "header");
+
+const assertOccWrite = (op: OpenApiOperation | undefined) => {
+  const header = ifMatchHeader(op);
+  assert.ok(header, "expected If-Match header");
+  assert.equal(header.required, true);
+  assert.equal(header.schema?.type, "string");
+  assert.equal(header.schema?.format, "date-time");
+  assert.ok(op?.responses?.["412"]);
+  assert.ok(op?.responses?.["428"]);
+};
+
+const assertNoOcc = (op: OpenApiOperation | undefined) => {
+  assert.equal(ifMatchHeader(op), undefined);
+  assert.equal(op?.responses?.["412"], undefined);
+  assert.equal(op?.responses?.["428"], undefined);
 };
 
 const textOf = (entries: GenerateEntry[], path: string): string => {
@@ -77,8 +112,12 @@ describe("generate-openapi samples", () => {
     const ping = json.paths["/api/ping"]?.post;
     assert.equal(ping?.operationId, "ping");
     assert.equal(ping?.requestBody, undefined);
+    assertNoOcc(ping);
     const clone = json.paths["/api/users/{id}/clone/{id}"]?.post;
     assert.equal(clone?.operationId, "clone_user");
+    assertNoOcc(clone);
+    assertNoOcc(json.paths["/api/users/email/{email}"]?.put);
+    assertNoOcc(json.paths["/api/users/email/{email}"]?.delete);
   });
 
   it("3. complex: eager parent-child, nested combined routes, by-name", async () => {
@@ -122,9 +161,59 @@ describe("generate-openapi samples", () => {
       types.find((t) => t.name === "status")?.optimisticConcurrency,
       undefined,
     );
-    assert.ok(json.paths["/api/projects"]?.post);
-    assert.ok(json.paths["/api/projects/{id}"]?.put);
-    assert.ok(json.paths["/api/projects/{id}"]?.patch);
+    const projects = json.paths["/api/projects"];
+    const project = json.paths["/api/projects/{id}"];
+    assertOccWrite(project?.put);
+    assertOccWrite(project?.patch);
+    assertOccWrite(project?.delete);
+    assert.deepEqual(
+      project?.put?.parameters?.map((p) => p.name),
+      ["id", "If-Match"],
+    );
+    assertNoOcc(projects?.get);
+    assertNoOcc(projects?.post);
+    assertNoOcc(project?.get);
+    assertOccWrite(json.paths["/api/projects/{id}/tasks/{id}"]?.put);
+    assertOccWrite(json.paths["/api/projects/{id}/tasks/{id}"]?.delete);
+    assertNoOcc(json.paths["/api/projects/{id}/tasks"]?.post);
+    assertNoOcc(json.paths["/api/statuses"]?.get);
+  });
+
+  it("documents If-Match only when optimistic concurrency is on", async () => {
+    const occOn = new OpenApiConverter().convert({
+      version: "1.0.0",
+      routes: [
+        {
+          itemUpdate: {
+            path: "/api/items/{id}",
+            method: "PUT",
+            entity: "item",
+            isCustom: false,
+            optimisticConcurrency: true,
+          },
+        },
+        {
+          itemList: {
+            path: "/api/items",
+            method: "GET",
+            entity: "item",
+            isCustom: false,
+            optimisticConcurrency: true,
+          },
+        },
+      ],
+      components: {},
+    });
+    const occOnDoc = JSON.parse(occOn) as OpenApiDoc;
+    assertOccWrite(occOnDoc.paths["/api/items/{id}"]?.put);
+    assertNoOcc(occOnDoc.paths["/api/items"]?.get);
+
+    const { json: occOff } = await generateSample("01-simple", {
+      "datasource.use_optimistic_concurrency": "false",
+    });
+    assertNoOcc(occOff.paths["/api/users/{id}"]?.put);
+    assertNoOcc(occOff.paths["/api/users/{id}"]?.patch);
+    assertNoOcc(occOff.paths["/api/users/{id}"]?.delete);
   });
 
   it("uses OpenAPI defaults and skips invalid routes-api entries", async () => {
