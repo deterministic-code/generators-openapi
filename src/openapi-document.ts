@@ -129,7 +129,7 @@ export const renderOpenApiFromRoutesApi = ({
       json: fill(operationTmpl, operationTokens(routeName, def, groupByEntity)).trimEnd(),
     });
   }
-  const docTags = [...tagSet].sort();
+  const docTags = [...tagSet];
   const schemas = Object.entries(routesApi.components).map(
     ([name, schema]: [string, RoutesApiSchema]) => ({
       nameJson: JSON.stringify(name),

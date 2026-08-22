@@ -5,7 +5,7 @@ import { memoryReader } from "@deterministic-code/generators-common/deterministi
 import type { GenerateEntry } from "@deterministic-code/generators-common/generate-entry";
 import { generate } from "./generate-openapi.ts";
 import { loadRoutesApi } from "@deterministic-code/generators-common/routes-api-converter";
-import { DeterministicParser } from "@deterministic-code/generators-common/specification-parser";
+import { DeterministicParser } from "@deterministic-code/deterministic-specifications-typescript/parser";
 import type { RoutesApiDoc } from "@deterministic-code/generators-common/routes-api";
 import { OpenApiConverter } from "./openapi-converter.ts";
 import { renderOpenApiFromRoutesApi } from "./openapi-document.ts";
@@ -127,6 +127,11 @@ describe("generate-openapi samples", () => {
     const routesApi = await loadRoutesApi({ reader, settings: {} });
     assert.ok(json.paths["/api/statuses"]?.get);
     assert.equal(json.paths["/api/statuses"]?.post, undefined);
+    assert.deepEqual(new Set(json.tags?.map((t) => t.name)), new Set([
+      "status",
+      "project",
+      "task",
+    ]));
     assert.ok(json.paths["/api/projects"]);
     assert.ok(json.paths["/api/projects/{id}"]);
     assert.ok(json.paths["/api/projects/name/{name}"]);
