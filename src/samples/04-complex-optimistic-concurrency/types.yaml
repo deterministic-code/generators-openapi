@@ -1,0 +1,35 @@
+version: 1.0.0
+types:
+  - status:
+      tags: [datasource_type, view_type]
+      inherits: set
+      fields:
+        - name:
+            type: string
+  - project:
+      tags: [datasource_type, view_type]
+      inherits: set
+      fields:
+        - name:
+            type: string
+        - tasks:
+            type: task[]
+            references: task.project_id
+  - task:
+      tags: [datasource_type, view_type]
+      inherits: set
+      fields:
+        - title:
+            type: string
+        - project_id:
+            type: number
+            references: project.id
+        - status_id:
+            type: number
+            references: status.id
+  - project_eager_body:
+      inherits: project
+  - project_eager_create_body:
+      inherits: project
+  - project_eager_patch_body:
+      inherits: project

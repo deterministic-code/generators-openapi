@@ -1,0 +1,13 @@
+version: 1.0.0
+includes:
+  - types:
+      filter: tag == "datasource_type"
+types:
+  - status:
+      fields:
+        - name:
+            is_unique: true
+  - project:
+      fields:
+        - name:
+            is_unique: true

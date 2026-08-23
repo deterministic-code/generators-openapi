@@ -1,13 +1,15 @@
+version: 1.0.0
 includes:
-  - view_type_routes:
-      filter: 'type is view_type || type is datasource_type'
-      eager_path:
-        - project.tasks
-      eager_write_path:
-        - project.tasks
+  - types:
+      filter: tag == "view_type"
 routes:
   - get_projects_by_name:
+  - project:
+      eager_read_path:
+        - tasks
+      eager_update_path:
+        - tasks
 combined_routes:
   - project:
-      combined_types:
+      combines:
         - task

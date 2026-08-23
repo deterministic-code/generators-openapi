@@ -1,4 +1,0 @@
-includes:
-  - datasource_types:
-      include: "*"
-types: []

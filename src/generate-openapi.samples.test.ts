@@ -62,16 +62,16 @@ const textOf = (entries: GenerateEntry[], path: string): string => {
 const loadSample = async (name: string): Promise<Record<string, string>> => {
   const dir = new URL(`./samples/${name}/`, import.meta.url);
   const files = [
-    "datasource_types.yaml",
-    "view_types.yaml",
+    "types.yaml",
+    "datasource.yaml",
     "routes.yaml",
   ] as const;
   const texts = await Promise.all(
     files.map((file) => readFile(new URL(file, dir), "utf8")),
   );
   return {
-    "datasource_types.yaml": texts[0]!,
-    "view_types.yaml": texts[1]!,
+    "types.yaml": texts[0]!,
+    "datasource.yaml": texts[1]!,
     "routes.yaml": texts[2]!,
   };
 };
@@ -147,23 +147,24 @@ describe("generate-openapi samples", () => {
       "04-complex-optimistic-concurrency",
       { application_name: "Occ" },
     );
-    const types = (
+    const tables = (
       await DeterministicParser(
         memoryReader({
-          "datasource_types.yaml": files["datasource_types.yaml"]!,
+          "types.yaml": files["types.yaml"]!,
+          "datasource.yaml": files["datasource.yaml"]!,
         }),
       ).parse({ "datasource.id_type": "integer" })
-    ).datasourceTypes;
+    ).datasource;
     assert.equal(
-      types.find((t) => t.name === "project")?.optimisticConcurrency,
+      tables.find((t) => t.name === "project")?.useOptimisticConcurrency,
       true,
     );
     assert.equal(
-      types.find((t) => t.name === "task")?.optimisticConcurrency,
+      tables.find((t) => t.name === "task")?.useOptimisticConcurrency,
       true,
     );
     assert.equal(
-      types.find((t) => t.name === "status")?.optimisticConcurrency,
+      tables.find((t) => t.name === "status")?.useOptimisticConcurrency,
       undefined,
     );
     const projects = json.paths["/api/projects"];
