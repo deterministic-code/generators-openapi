@@ -1,7 +1,7 @@
 version: 1.0.0
 types:
   - role:
-      tags: [datasource_type, view_type]
+      tags: [datasource_type, view_type, readonly_lookup]
       inherits: set
       fields:
         - name:
