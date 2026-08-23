@@ -13,20 +13,22 @@ const textOf = (entries: GenerateEntry[], path: string): string => {
 };
 
 const fixtures = {
-  "datasource_types.yaml": `types:
+  "types.yaml": `types:
   - user:
+      tags: [datasource_type, view_type]
+      inherits: set
       fields:
         - email:
             type: string
 `,
-  "view_types.yaml": `includes:
-  - datasource_types:
-      include: "*"
+  "datasource.yaml": `includes:
+  - types:
+      filter: tag == "datasource_type"
 types: []
 `,
   "routes.yaml": `includes:
-  - view_type_routes:
-      filter: 'type is view_type || type is datasource_type'
+  - types:
+      filter: tag == "view_type"
 routes: []
 `,
 };
