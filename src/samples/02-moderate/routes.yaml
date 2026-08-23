@@ -1,6 +1,7 @@
+version: 1.0.0
 includes:
-  - view_type_routes:
-      filter: 'type is view_type || type is datasource_type'
+  - types:
+      filter: tag == "view_type"
 routes:
   - users_by_email:
   - ping:
