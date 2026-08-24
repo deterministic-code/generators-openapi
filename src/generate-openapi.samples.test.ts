@@ -153,7 +153,7 @@ describe("generate-openapi samples", () => {
           "types.yaml": files["types.yaml"]!,
           "datasource.yaml": files["datasource.yaml"]!,
         }),
-      ).parse({ "datasource.id_type": "integer" })
+      ).parse({})
     ).datasource;
     assert.equal(
       tables.find((t) => t.name === "project")?.useOptimisticConcurrency,
